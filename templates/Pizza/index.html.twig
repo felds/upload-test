@@ -1,0 +1,12 @@
+{% extends "base.html.twig" %}
+
+{% block body %}
+    <h1>Pizzas</h1>
+
+    <ul>
+        {% for entity in entities %}
+            <li>{{ entity }}</li>
+        {% endfor %}
+    </ul>
+{% endblock %}
+
