@@ -6,6 +6,9 @@ namespace App\Controller;
 use App\Entity\Pizza;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -29,6 +32,7 @@ class PizzaController extends Controller
 
     /**
      * @Route("/")
+     * @return Response
      */
     public function indexAction()
     {
@@ -36,6 +40,34 @@ class PizzaController extends Controller
 
         return $this->render('Pizza/index.html.twig', [
             'entities' => $entities,
+        ]);
+    }
+
+    /**
+     * @Route("/new")
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
+     */
+    public function newAction(Request $request)
+    {
+        $entity = new Pizza();
+        $form = $this->createFormBuilder($entity)
+            ->add('name')
+            ->add('submit', SubmitType::class)
+            ->getForm()
+        ;
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->em->persist($entity);
+            $this->em->flush();
+
+            return $this->redirectToRoute('app_pizza_index');
+        }
+
+        return $this->render('Pizza/form.html.twig', [
+            'entity' => $entity,
+            'form' => $form->createView(),
         ]);
     }
 }
