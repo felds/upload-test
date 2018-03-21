@@ -7,7 +7,6 @@ use App\Entity\Pizza;
 use App\Form\PizzaType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -69,12 +68,44 @@ class PizzaController extends Controller
     }
 
     /**
+     * @Route("/{id}")
      * @param Pizza $entity
-     * @Route("/{id}/dump")
+     * @return Response
      */
-    public function dumpAction(Pizza $entity)
+    public function showAction(Pizza $entity)
     {
-        dump($entity);
-        die;
+        return $this->render('Pizza/show.html.twig', [
+            'entity' => $entity,
+            'delete_form' => $this->createDeleteForm($entity)->createView(),
+        ]);
+    }
+
+    /**
+     * @Route("/{id}/delete", methods={"delete"})
+     * @param Request $request
+     * @param Pizza $entity
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     */
+    public function deleteAction(Request $request, Pizza $entity)
+    {
+        $form = $this->createDeleteForm($entity);
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->em->remove($entity);
+            $this->em->flush();
+        }
+
+        return $this->redirectToRoute('app_pizza_index');
+    }
+
+    private function createDeleteForm(Pizza $entity)
+    {
+        $builder = $this->createFormBuilder($entity, [
+            'method' => Request::METHOD_DELETE,
+            'action' => $this->generateUrl('app_pizza_delete', ['id' => $entity->getId()]),
+        ]);
+
+        return $builder->getForm();
     }
 }

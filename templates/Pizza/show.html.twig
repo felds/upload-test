@@ -1,0 +1,11 @@
+{% extends "base.html.twig" %}
+
+{% block body %}
+    <h1>Viewing pizza {{ entity }}</h1>
+
+    {{ form_start(delete_form) }}
+        {{ form_row(delete_form) }}
+        <button type="submit">delete</button>
+    {{ form_end(delete_form) }}
+{% endblock %}
+

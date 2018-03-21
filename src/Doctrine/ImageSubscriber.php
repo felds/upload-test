@@ -7,6 +7,7 @@ use App\Entity\Image;
 use Doctrine\Common\EventSubscriber;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Events;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
@@ -18,12 +19,19 @@ class ImageSubscriber implements EventSubscriber
     private $uploadDir;
 
     /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    /**
      * ImageSubscriber constructor.
      * @param string $uploadDir
+     * @param LoggerInterface $logger
      */
-    public function __construct(string $uploadDir)
+    public function __construct(string $uploadDir, LoggerInterface $logger)
     {
         $this->uploadDir = $uploadDir;
+        $this->logger = $logger;
     }
 
     /**
@@ -50,12 +58,28 @@ class ImageSubscriber implements EventSubscriber
         }
     }
 
-    public function postRemove($args)
+    /**
+     * @param LifecycleEventArgs $args
+     */
+    public function postRemove(LifecycleEventArgs $args)
     {
-        dump($args);
-        die;
+        $entity = $args->getEntity();
+
+        if ($entity instanceof Image) {
+            $path = $entity->getFile()->getRealPath();
+
+            $success = @unlink($path);
+
+            if (!$success) {
+                $this->logger->warning("The file {$path} couldn't be deleted.");
+            }
+        }
     }
 
+    /**
+     * @param UploadedFile $uploadedFile
+     * @return File
+     */
     private function upload(UploadedFile $uploadedFile): File
     {
         $targetDir = $this->uploadDir;
