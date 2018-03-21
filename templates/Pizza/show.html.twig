@@ -3,6 +3,8 @@
 {% block body %}
     <h1>Viewing pizza {{ entity }}</h1>
 
+    {{ dump(entity) }}
+
     {{ form_start(delete_form) }}
         {{ form_row(delete_form) }}
         <button type="submit">delete</button>
