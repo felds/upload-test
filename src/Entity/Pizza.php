@@ -27,6 +27,13 @@ class Pizza
     private $name = "";
 
     /**
+     * @var Image
+     *
+     * @ORM\OneToOne(targetEntity=Image::class, cascade={"all"})
+     */
+    private $image;
+
+    /**
      * @return string
      */
     public function __toString()
@@ -40,17 +47,6 @@ class Pizza
     public function getId(): int
     {
         return $this->id;
-    }
-
-    /**
-     * @param int $id
-     * @return Pizza
-     */
-    public function setId(int $id): Pizza
-    {
-        $this->id = $id;
-
-        return $this;
     }
 
     /**
@@ -72,5 +68,22 @@ class Pizza
         return $this;
     }
 
+    /**
+     * @return Image|null
+     */
+    public function getImage(): ?Image
+    {
+        return $this->image;
+    }
 
+    /**
+     * @param Image|null $image
+     * @return Pizza
+     */
+    public function setImage(Image $image = null): Pizza
+    {
+        $this->image = $image;
+
+        return $this;
+    }
 }

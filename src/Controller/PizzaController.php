@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Entity\Pizza;
+use App\Form\PizzaType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -51,11 +52,7 @@ class PizzaController extends Controller
     public function newAction(Request $request)
     {
         $entity = new Pizza();
-        $form = $this->createFormBuilder($entity)
-            ->add('name')
-            ->add('submit', SubmitType::class)
-            ->getForm()
-        ;
+        $form = $this->createForm(PizzaType::class, $entity);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
