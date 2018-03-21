@@ -29,7 +29,7 @@ class Pizza
     /**
      * @var Image
      *
-     * @ORM\OneToOne(targetEntity=Image::class, cascade={"all"})
+     * @ORM\OneToOne(targetEntity=Image::class, cascade={"all"}, fetch="EAGER")
      */
     private $image;
 

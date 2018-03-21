@@ -67,4 +67,14 @@ class PizzaController extends Controller
             'form' => $form->createView(),
         ]);
     }
+
+    /**
+     * @param Pizza $entity
+     * @Route("/{id}/dump")
+     */
+    public function dumpAction(Pizza $entity)
+    {
+        dump($entity);
+        die;
+    }
 }
