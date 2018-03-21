@@ -20,10 +20,10 @@ class Image
     private $id;
 
     /**
-     * @var string
-     * @ORM\Column()
+     * @var File|null
+     * @ORM\Column(type="file")
      */
-    private $path;
+    private $file;
 
     /**
      * Image constructor.
@@ -31,7 +31,7 @@ class Image
      */
     public function __construct(File $file)
     {
-        $this->path = $file->getRealPath();
+        $this->file = $file;
     }
 
     /**
@@ -43,10 +43,20 @@ class Image
     }
 
     /**
-     * @return string
+     * @param null|File $file
      */
-    public function getPath(): string
+    public function setFile(?File $file): Image
     {
-        return $this->path;
+        $this->file = $file;
+
+        return $this;
+    }
+
+    /**
+     * @return null|File
+     */
+    public function getFile(): ?File
+    {
+        return $this->file;
     }
 }
