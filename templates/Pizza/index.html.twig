@@ -9,6 +9,8 @@
                 <a href="{{ path('app_pizza_show', {id: entity.id}) }}">
                     {{ entity }}
                 </a>
+
+                <a href="{{ path('app_pizza_edit', {id: entity.id}) }}">Edit</a>
             </li>
         {% endfor %}
     </ul>

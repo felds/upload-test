@@ -31,7 +31,7 @@ class PizzaController extends Controller
     }
 
     /**
-     * @Route("/")
+     * @Route("/", methods={"get"})
      * @return Response
      */
     public function indexAction()
@@ -44,7 +44,7 @@ class PizzaController extends Controller
     }
 
     /**
-     * @Route("/new")
+     * @Route("/new", methods={"post", "get"})
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
      */
@@ -68,7 +68,7 @@ class PizzaController extends Controller
     }
 
     /**
-     * @Route("/{id}")
+     * @Route("/{id}", methods={"get"})
      * @param Pizza $entity
      * @return Response
      */
@@ -77,6 +77,29 @@ class PizzaController extends Controller
         return $this->render('Pizza/show.html.twig', [
             'entity' => $entity,
             'delete_form' => $this->createDeleteForm($entity)->createView(),
+        ]);
+    }
+
+    /**
+     * @Route("/{id}/edit", methods={"post", "get"})
+     * @param Request $request
+     * @param Pizza $entity
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
+     */
+    public function editAction(Request $request, Pizza $entity)
+    {
+        $form = $this->createForm(PizzaType::class, $entity);
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->em->flush();
+
+            return $this->redirectToRoute('app_pizza_index');
+        }
+
+        return $this->render('Pizza/form.html.twig', [
+            'entity' => $entity,
+            'form' => $form->createView(),
         ]);
     }
 
@@ -99,6 +122,10 @@ class PizzaController extends Controller
         return $this->redirectToRoute('app_pizza_index');
     }
 
+    /**
+     * @param Pizza $entity
+     * @return \Symfony\Component\Form\FormInterface
+     */
     private function createDeleteForm(Pizza $entity)
     {
         $builder = $this->createFormBuilder($entity, [
