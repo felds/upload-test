@@ -44,10 +44,12 @@ class ImageDataMapper implements DataMapperInterface
         $forms = iterator_to_array($forms);
         $file = $forms['file']->getData();
 
+        // delete previous image if the file has changed
         if ($data) {
             $this->em->remove($data);
         }
 
+        // create a new entity if a file was uploaded
         if ($file instanceof File) {
             $data = new Image($file);
         }
